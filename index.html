@@ -25,6 +25,7 @@
             <button class="menu-item" onclick="launchSimulation('snake', this)">🕹️ Classic Snake</button>
             <button class="menu-item" onclick="launchSimulation('breakout', this)">🧱 Breakout Matrix</button>
             <button class="menu-item" onclick="launchSimulation('pong', this)">🏓 Quantum Pong</button>
+            <button class="menu-item style-mc" onclick="launchMinecraft(this)">⛏️ Eagler Craft MC</button>
         </aside>
 
         <main class="main-stage">
@@ -38,8 +39,9 @@
                     <span class="game-title-hud" id="hudTitle">Simulation</span>
                     <span class="score-hud">Score: <span id="hudScore">0</span></span>
                 </div>
-                <div style="position: relative;">
+                <div style="position: relative; width: 100%; display: flex; justify-content: center;">
                     <canvas id="gameCanvas" width="500" height="400"></canvas>
+                    <iframe id="mcFrame" src="" width="800" height="480" style="display:none; border:none; border-radius:10px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);"></iframe>
                     <div class="screen-overlay" id="failScreen">
                         <h4>SIMULATION COMPLETE</h4>
                         <button class="restart-btn" onclick="restartSimulation()">Reboot Simulation</button>
