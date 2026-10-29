@@ -4,7 +4,6 @@ let pPaddle1, pPaddle2, pBall;
 let frameThrottle = 0;
 
 function buildGameCore(gameKey) {
-    cancelAnimationFrame(animationFrameId);
     activeGame = gameKey;
     setScore(0);
 
@@ -123,11 +122,7 @@ function runPong() {
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(10, pPaddle1, 10, 80);
     ctx.fillRect(canvas.width - 20, pPaddle2, 10, 80);
-    boxCircleDraw(pBall.x, pBall.y, pBall.r);
+    ctx.beginPath(); ctx.arc(pBall.x, pBall.y, pBall.r, 0, Math.PI*2); ctx.fill();
 
     animationFrameId = requestAnimationFrame(runPong);
-}
-
-function boxCircleDraw(x,y,r) {
-    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fill();
 }
