@@ -113,9 +113,14 @@ body {
     box-shadow: inset 4px 0 0 var(--accent);
 }
 
-.main-stage { display: flex; justify-content: center; align-items: center; padding: 2rem; }
+.style-mc:hover, .style-mc.active {
+    box-shadow: inset 4px 0 0 #10b981 !important;
+    color: #10b981;
+}
+
+.main-stage { display: flex; justify-content: center; align-items: center; padding: 2rem; width: 100%; }
 .welcome-card { text-align: center; max-width: 450px; }
-.game-viewport { display: none; flex-direction: column; align-items: center; }
+.game-viewport { display: none; flex-direction: column; align-items: center; width: 100%; }
 .hud-bar { width: 100%; max-width: 500px; display: flex; justify-content: space-between; margin-bottom: 1rem; }
 .game-title-hud { font-weight: 600; color: var(--accent); }
 
