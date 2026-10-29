@@ -3,130 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Institutional Cloud Portal</title>
-    <style>
-        :root {
-            --bg-color: #f4f6f9;
-            --primary: #1b365d;
-            --accent: #2b6cb0;
-            --text-main: #2d3748;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
-        body { background: var(--bg-color); color: var(--text-main); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        
-        /* Login Screen Facade */
-        .login-card { background: #fff; padding: 2.5rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 100%; max-width: 380px; text-align: center; }
-        .login-card h2 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.6rem; }
-        .login-card p { color: #718096; font-size: 0.85rem; margin-bottom: 2rem; }
-        .input-box { width: 100%; padding: 12px; margin-bottom: 1.25rem; border: 1px solid #cbd5e0; border-radius: 5px; font-size: 1rem; outline: none; }
-        .input-box:focus { border-color: var(--accent); }
-        .btn { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 5px; font-size: 1rem; font-weight: 600; cursor: pointer; }
-        .btn:hover { background: var(--accent); }
-
-        /* Secret Workspace Terminal */
-        .arcade-dash { display: none; width: 100vw; height: 100vh; background: #0f141c; color: #cbd5e1; flex-direction: column; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; }
-        .game-title { font-size: 1.5rem; margin-bottom: 1rem; color: #38bdf8; font-weight: bold; letter-spacing: 1px; }
-        #arcadeCanvas { background: #000; border: 3px solid #334155; border-radius: 6px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        .score-display { margin-top: 1rem; font-size: 1.2rem; font-weight: 600; color: #f1f5f9; }
-    </style>
+    <title>Student Cloud Terminal</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- STEALTH SCREEN -->
-    <div class="login-card" id="frontPortal">
-        <h2>Single Sign-On</h2>
-        <p>Managed Institutional Device Node Deployment</p>
-        <input type="text" class="input-box" placeholder="Student ID / Username">
-        <input type="password" id="gateKey" class="input-box" placeholder="Portal Passcode">
-        <button class="btn" onclick="authenticate()">Sign In to Dashboard</button>
+    <!-- SECURE GATEWAY FACADE -->
+    <div class="portal-wrapper" id="authGate">
+        <h2>Device Registration</h2>
+        <p>Enter local workspace network credentials</p>
+        <input type="text" class="form-input" placeholder="User Token / Node AddressID">
+        <input type="password" class="form-input" id="accessPasscode" placeholder="Node Pin Verification">
+        <button class="submit-btn" onclick="verifySecureHandshake()">Initialize Workspace</button>
     </div>
 
-    <!-- HIDDEN BUILT-IN ARCADE -->
-    <div class="arcade-dash" id="hiddenWorkspace">
-        <div class="game-title">TERMINAL SIMULATION ACTIVE</div>
-        <canvas id="arcadeCanvas" width="400" height="400"></canvas>
-        <div class="score-display">Score: <span id="currentScore">0</span></div>
+    <!-- PREMIUM REWRITTEN SIDEBAR DASHBOARD -->
+    <div class="arcade-layout" id="appDashboard">
+        <aside class="sidebar">
+            <div class="brand-header">🌐 Node Console Alpha</div>
+            <div class="menu-label">Local Applications</div>
+            <button class="menu-item" onclick="launchSimulation('snake', this)">🕹️ Classic Snake</button>
+            <button class="menu-item" onclick="launchSimulation('breakout', this)">🧱 Breakout Matrix</button>
+            <button class="menu-item" onclick="launchSimulation('pong', this)">🏓 Quantum Pong</button>
+        </aside>
+
+        <main class="main-stage">
+            <div class="welcome-card" id="idleNotice">
+                <h3>Terminal Client Ready</h3>
+                <p>Select a verified micro-application core application package sequence via the side utility panel layout options interface.</p>
+            </div>
+
+            <div class="game-viewport" id="viewportArea">
+                <div class="hud-bar">
+                    <span class="game-title-hud" id="hudTitle">Simulation</span>
+                    <span class="score-hud">Score: <span id="hudScore">0</span></span>
+                </div>
+                <div style="position: relative;">
+                    <canvas id="gameCanvas" width="500" height="400"></canvas>
+                    <div class="screen-overlay" id="failScreen">
+                        <h4>SIMULATION COMPLETE</h4>
+                        <button class="restart-btn" onclick="restartSimulation()">Reboot Simulation</button>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <script>
-        // Authentication check
-        function authenticate() {
-            const pin = document.getElementById('gateKey').value;
-            if (pin === '0000') {
-                document.getElementById('frontPortal').style.display = 'none';
-                document.getElementById('hiddenWorkspace').style.display = 'flex';
-                startTerminalGame();
-            } else {
-                alert("Handshake denied. Invalid access parameters.");
-            }
-        }
-
-        // Engine code for internal game element
-        function startTerminalGame() {
-            const canvas = document.getElementById('arcadeCanvas');
-            const ctx = canvas.getContext('2d');
-            const grid = 20;
-            let score = 0;
-            let snake = [{x: 160, y: 160}, {x: 140, y: 160}];
-            let dx = grid, dy = 0;
-            let apple = {x: 300, y: 200};
-
-            // Watch keyboard events safely without scrolling the tab window
-            window.addEventListener('keydown', e => {
-                if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) e.preventDefault();
-                if (e.key === 'ArrowLeft' && dx === 0) { dx = -grid; dy = 0; }
-                if (e.key === 'ArrowUp' && dy === 0) { dx = 0; dy = -grid; }
-                if (e.key === 'ArrowRight' && dx === 0) { dx = grid; dy = 0; }
-                if (e.key === 'ArrowDown' && dy === 0) { dx = 0; dy = grid; }
-            });
-
-            function main() {
-                if (hasGameEnded()) {
-                    alert("Simulation Ended. Final Score: " + score);
-                    snake = [{x: 160, y: 160}, {x: 140, y: 160}];
-                    dx = grid; dy = 0; score = 0;
-                    document.getElementById('currentScore').innerText = score;
-                }
-                setTimeout(function onTick() {
-                    clearCanvas();
-                    drawApple();
-                    moveSnake();
-                    drawSnake();
-                    main();
-                }, 100);
-            }
-
-            function clearCanvas() { ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, canvas.width, canvas.height); }
-            function drawSnake() { ctx.fillStyle = '#10b981'; snake.forEach(part => ctx.fillRect(part.x, part.y, grid-2, grid-2)); }
-            
-            function moveSnake() {
-                const head = {x: snake[0].x + dx, y: snake[0].y + dy};
-                snake.unshift(head);
-                if (snake[0].x === apple.x && snake[0].y === apple.y) {
-                    score += 10;
-                    document.getElementById('currentScore').innerText = score;
-                    generateApple();
-                } else {
-                    snake.pop();
-                }
-            }
-
-            function drawApple() { ctx.fillStyle = '#ef4444'; ctx.fillRect(apple.x, apple.y, grid-2, grid-2); }
-            function generateApple() {
-                apple.x = Math.floor(Math.random() * (canvas.width / grid)) * grid;
-                apple.y = Math.floor(Math.random() * (canvas.height / grid)) * grid;
-            }
-
-            function hasGameEnded() {
-                for (let i = 4; i < snake.length; i++) {
-                    if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true;
-                }
-                return snake[0].x < 0 || snake[0].x >= canvas.width || snake[0].y < 0 || snake[0].y >= canvas.height;
-            }
-
-            generateApple();
-            main();
-        }
-    </script>
+    <script src="main.js"></script>
+    <script src="games.js"></script>
 </body>
 </html>
