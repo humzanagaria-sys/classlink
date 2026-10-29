@@ -35,12 +35,36 @@ function restartSimulation() {
 }
 
 function launchSimulation(gameKey, btnElement) {
+    cancelAnimationFrame(animationFrameId);
     document.querySelectorAll(".menu-item").forEach(b => b.classList.remove("active"));
     btnElement.classList.add("active");
+    
+    // Manage display configurations
     document.getElementById("idleNotice").style.display = "none";
     document.getElementById("failScreen").style.display = "none";
+    document.getElementById("mcFrame").style.display = "none";
+    document.getElementById("mcFrame").src = ""; 
+    document.getElementById("gameCanvas").style.display = "block";
     document.getElementById("viewportArea").style.display = "flex";
     
     document.getElementById("hudTitle").innerText = gameKey.toUpperCase() + " INTERFACE";
     buildGameCore(gameKey);
+}
+
+function launchMinecraft(btnElement) {
+    cancelAnimationFrame(animationFrameId);
+    document.querySelectorAll(".menu-item").forEach(b => b.classList.remove("active"));
+    btnElement.classList.add("active");
+    
+    document.getElementById("idleNotice").style.display = "none";
+    document.getElementById("failScreen").style.display = "none";
+    document.getElementById("gameCanvas").style.display = "none";
+    
+    // Inject stable, serverless browser version setup
+    const iframe = document.getElementById("mcFrame");
+    iframe.src = "https://deev.is"; 
+    iframe.style.display = "block";
+    document.getElementById("viewportArea").style.display = "flex";
+    document.getElementById("hudTitle").innerText = "EAGLER CRAFT ENVIRONMENT";
+    setScore(0);
 }
